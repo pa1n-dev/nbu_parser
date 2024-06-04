@@ -80,7 +80,7 @@ int service::run()
 
 	//StartServiceCtrlDispatcher - подключает поток main процесса службы к диспетчеру управления службами, что приводит к тому, что поток будет потоком диспетчера управления службой для вызывающего процесса.
 	if (!StartServiceCtrlDispatcher(ServiceTable))
-		logger::write_log("StartServiceCtrlDispatcher error: ", GetLastError());
+		logger::write_log("StartServiceCtrlDispatcher error:", GetLastError());
 
 	return ERROR_SUCCESS;
 }
@@ -194,7 +194,7 @@ void service::exit()
 
 void service::error()
 {
-	logger::write_log("Error: ", GetLastError());
+	logger::write_log("Error:", GetLastError());
 
 	set_controls_accepted(false);
 	status.dwCurrentState = SERVICE_STOPPED;
@@ -202,7 +202,7 @@ void service::error()
 	status.dwCheckPoint = 0;
 
 	if (!SetServiceStatus(status_handle, &status))
-		logger::write_log("SetServiceStatus error: ", GetLastError());
+		logger::write_log("SetServiceStatus error:", GetLastError());
 }
 
 /*Controls*/
@@ -253,7 +253,7 @@ void service::set_controls_accepted(bool need)
 		status.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
 
 	if (!SetServiceStatus(status_handle, &status))
-		logger::write_log("SetServiceStatus error: ", GetLastError());
+		logger::write_log("SetServiceStatus error:", GetLastError());
 }
 
 void service::set_state(DWORD state)
@@ -264,10 +264,10 @@ void service::set_state(DWORD state)
 	status.dwWaitHint = 0;
 
 	if (!SetServiceStatus(status_handle, &status))
-		logger::write_log("SetServiceStatus error: ", GetLastError());
+		logger::write_log("SetServiceStatus error:", GetLastError());
 }
 
-DWORD WINAPI service::worker_thread(LPVOID lpParam)
+DWORD WINAPI service::worker_thread(LPVOID param)
 {
-	return instance->worker(lpParam);
+	return instance->worker(param);
 }

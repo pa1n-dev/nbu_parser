@@ -3,7 +3,8 @@
 namespace logger
 {
     //запись логов в файл
-    void write_log(const string& format, auto... args)
+    template<typename... T>
+    void write_log(const string& format, const T&... args)
     {
         if (!settings::logs)
             return;
@@ -18,7 +19,9 @@ namespace logger
             return;
 
         //форматируем данные и записываем в файл
-        file << std::format(format, args...) << endl;
+        file << format;
+        ((file << " " << args), ...); //печатаем все аргументы из пакета args
+        file << endl;
         file.close();
     }
 }
